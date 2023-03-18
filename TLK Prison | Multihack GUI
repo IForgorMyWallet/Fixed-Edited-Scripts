@@ -1,0 +1,182 @@
+--ERROR CAUSE: using a outdated library
+--Original Thread = https://v3rmillion.net/showthread.php?tid=1145686
+
+--i found this interesting but i saw it was patched so i just thought of fixing it using wally's library
+game.StarterGui:SetCore("SendNotification", {
+	Title = "garfield"; 
+	Text = "Welcome";
+	Icon = ""; 
+	Duration = 5; 
+})
+
+
+
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wall%20v3"))()
+local Main = Library:CreateWindow("Main")
+
+local Misc = Main:CreateFolder("Misc")
+
+Misc:Button("Join Discord",function()
+	setclipboard("https://discord.gg/t8seJmggMH")
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "garfield"; 
+		Text = "invite copied to clipboard";
+		Icon = nil; 
+		Duration = 5; 
+	})
+end)
+
+local Features = Main:CreateFolder("Rage")
+
+
+local Player = Main:CreateFolder("Player")
+
+local Toggles = {
+	KilAlling = false,
+	aurakill = false ,
+	alwaysrun = false ,
+	walksped = 16 
+}
+
+Features:Label("Only works if you are a prisoner!",{
+	TextSize = 14;
+	TextColor = Color3.fromRGB(255,255,255);
+	BgColor = Color3.fromRGB(69,69,69);
+})
+
+Features:Toggle("Teleport to All",function(bool)
+	Toggles.KilAlling = bool
+end)
+
+
+Features:Toggle("Kill Aura",function(bool)
+	Toggles.aurakill = bool
+end)
+
+
+
+Player:Slider("WalkSpeed",{
+	min = 1;
+	max = 500;
+	precise = false;
+},function(value)
+	Toggles.walksped = value 
+	game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Toggles.walksped 
+end)
+
+Player:Toggle("Always Set Walkspeed",function(bool)
+	Toggles.alwaysrun = bool
+end)
+
+spawn(function()
+	while wait() do 
+		pcall(function()
+			if Toggles.alwaysrun == true then 
+				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Toggles.walksped 
+			end
+		end)
+	end
+end)
+
+
+Player:Button("Get Axe",function()
+	fireclickdetector(game:GetService("Workspace").Axe.ClickDetector)
+end)
+
+
+
+while wait() do 
+	pcall(function()
+		if Toggles.KilAlling == true then 
+
+
+			local NearestPart = nil
+			local Lenght = nil
+			local Folder = game:GetService("Workspace")
+			local Player = game.Players.LocalPlayer
+
+			for i,v in pairs(Folder:GetDescendants()) do
+				if v:IsA("Part") then 
+					if v.Name == "HumanoidRootPart" then 
+						if v.Parent.Name ~= game.Players.LocalPlayer.Name then 
+							if game:GetService("Players"):FindFirstChild(v.Parent.Name) then 
+								if tostring(game:GetService("Players"):FindFirstChild(v.Parent.Name).Team) == "Guard" then 
+									if v.Parent.Name ~= "HumanoidRootPart"then 
+										if game.Workspace[v.Parent.Name].Humanoid.Health ~= 0 then 
+											if game.Workspace[v.Parent.Name]:FindFirstChild("ForceField") then 
+												game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(39.900119781494, 3.2001729011536, -8.2586345672607)
+											else 
+												local LenghtX = Player:DistanceFromCharacter(v.Position)
+												if Lenght == nil or LenghtX < Lenght then
+													Lenght = LenghtX
+													NearestPart = v
+												end
+											end 
+
+										end 
+									end 
+								end 
+							end 
+						end 
+					end
+				end
+			end
+
+			print(NearestPart.Name)
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = NearestPart.CFrame 
+		end
+
+		if Toggles.aurakill == true  then 
+
+			-- Eqiup Axe 
+			if not game.Players.LocalPlayer.Character:FindFirstChild("Axe") or game.Players.LocalPlayer.Backpack:FindFirstChild("Axe") then 
+				fireclickdetector(game:GetService("Workspace").Axe.ClickDetector)
+			end
+
+
+			if not game.Players.LocalPlayer.Character:FindFirstChild("Axe") then 
+				wait(0.7)
+				game.Players.LocalPlayer.Backpack.Axe.Parent = game.Players.LocalPlayer.Character
+			end
+
+
+
+			local NearestPart = nil
+			local Lenght = nil
+			local Folder = game:GetService("Workspace")
+			local Player = game.Players.LocalPlayer
+
+			for i,v in pairs(Folder:GetDescendants()) do
+				if v:IsA("Part") then 
+					if v.Name == "HumanoidRootPart" then 
+						if v.Parent.Name ~= game.Players.LocalPlayer.Name then 
+							if game:GetService("Players"):FindFirstChild(v.Parent.Name) then 
+								if tostring(game:GetService("Players"):FindFirstChild(v.Parent.Name).Team) == "Guard" then 
+									if v.Parent.Name ~= "HumanoidRootPart"then 
+										if game.Workspace[v.Parent.Name].Humanoid.Health ~= 0 then 
+
+											local LenghtX = Player:DistanceFromCharacter(v.Position)
+											if Lenght == nil or LenghtX < Lenght then
+												Lenght = LenghtX
+												NearestPart = v
+											end
+										end 
+
+									end 
+
+								end 
+							end 
+						end 
+					end
+				end
+			end
+
+			local ohInstance1 = game.Players.LocalPlayer.Character
+			local ohInstance2 = workspace[NearestPart.Parent.Name]["Right Arm"]
+			local ohInstance3 = game:GetService("Players").LocalPlayer.Character.Axe
+
+			game:GetService("ReplicatedStorage").Combat:FireServer(ohInstance1, ohInstance2, ohInstance3)
+		end
+	end)  
+end 
